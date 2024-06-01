@@ -20,10 +20,10 @@ type Data struct {
 // Data to send
 var data = StructData{
 	Data: Data{
-		Name:        "Seguro de Vida Activa",
-		Description: "Con nuestro Seguro Vida Activa podrás disfrutar el día a día con tranquilidad, gracias al respaldo y apoyo frente a las consecuencias de eventuales accidentes que puedas sufrir. Posee excelente cobertura, un precio muy conveniente y, en caso de fallecimiento, apoyo financiero para tus seres queridos con un capital asegurado.",
-		Price:       "9000",
-		Image:       "https://ventaenlinea.bicevida.cl/pub/media/catalog/product/cache/69eb2560c3d44c78f7327201dc5a282b/i/m/img-01.jpg",
+		Name:        "Nombre de Seguro",
+		Description: "Descripcion del Seguro",
+		Price:       "Valor",
+		Image:       "url_de_imagen",
 	},
 }
 
