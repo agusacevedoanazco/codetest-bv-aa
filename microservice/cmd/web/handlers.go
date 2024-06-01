@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"html/template"
 	"microservice/internal/client"
 	"net/http"
 	"os"
@@ -31,5 +31,14 @@ func (app *application) root(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 
-	fmt.Fprintf(w, "%+v", insurance)
+	ts, err := template.ParseFiles("./ui/html/homepage.tmpl")
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "homepage", insurance.InsuranceData)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
