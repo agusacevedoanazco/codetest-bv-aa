@@ -12,8 +12,10 @@ RUN go build -o microservice ./cmd/web
 
 FROM alpine:3.20 as svc-stage
 
-COPY --from=build-stage --chown=10000:10000 /app/microservice /microservice
+WORKDIR /app
+COPY --chown=10000:10000 ui/ ./ui/
+COPY --from=build-stage --chown=10000:10000 /app/microservice ./microservice
 USER 10000:10000
 EXPOSE 32080
 
-CMD ["/microservice"]
+CMD ["/app/microservice"]
