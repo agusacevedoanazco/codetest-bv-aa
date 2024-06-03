@@ -20,7 +20,7 @@ type InsuranceData struct {
 }
 
 func GetData(url string) (*Insurance, error) {
-	client := &http.Client{Timeout: time.Minute * 5} // Max timeout 5 minutes
+	client := &http.Client{Timeout: time.Minute} // Max timeout 5 minutes
 	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
