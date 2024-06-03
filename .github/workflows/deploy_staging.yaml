@@ -1,0 +1,11 @@
+name: Deploy to STAGING
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Todo
+        run: echo "//TODO"

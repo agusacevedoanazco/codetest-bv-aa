@@ -1,0 +1,11 @@
+name: Deploy to PROD
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Todo
+        run: echo "//TODO"

@@ -1,0 +1,22 @@
+name: Source code vulnerability scan
+on:
+  push:
+    branches:
+      - "main"
+      - "feature/*"
+
+jobs:
+  codescan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan source code
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          path: "microservice/."
+          fail-build: true
+          severity-cutoff: high
+          output-format: table
