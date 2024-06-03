@@ -1,0 +1,52 @@
+body {
+  background-color: #eaeff1;
+  font-family: "MesloLGS Nerd Font", sans-serif;
+}
+
+img {
+  width: 100%;
+  border-radius: 12px;
+  /* height: 214px; */
+  height: 360px;
+  object-fit: cover;
+}
+
+#container {
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 20vh;
+}
+
+.card {
+  background-color: white;
+  border: 1px solid #bacdd8;
+  padding: 8px;
+  border-radius: 16px;
+}
+
+.tag {
+  padding: 4px 8px;
+  border: 1px solid #e5eaed;
+
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #788697;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 600;
+
+  margin-top: 16px;
+}
+
+p {
+  font-size: 14px;
+  color: #7f8c9b;
+  line-height: 150%;
+}
+
+.card__details {
+  padding: 16px 8px 8px 8px;
+}

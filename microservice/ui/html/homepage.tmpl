@@ -1,0 +1,26 @@
+{{define "homepage"}}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="/static/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/fonts.css" type="text/css" />
+  </head>
+  <body>
+    <div id="container">
+      <div class="card">
+        <!-- <img src="{{.Image}}" alt="Image" /> -->
+        <img src="{{.Image}}" alt="Image" />
+        <div class="name">{{.Name}}</div>
+        <hr />
+        <span class="tag">${{.Price}}</span>
+        <p>{{.Description}}</p>
+      </div>
+    </div>
+  </body>
+</html>
+
+{{end}}

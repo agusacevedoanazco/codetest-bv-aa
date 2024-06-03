@@ -42,7 +42,10 @@ func (app *application) logRequest(next http.Handler) http.Handler {
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 	mux.HandleFunc("/", app.root)
 
+	// return app.logRequest(secureContentsHeaders(mux))
 	return app.logRequest(mux)
 }

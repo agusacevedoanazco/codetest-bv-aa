@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "MesloLGS Nerd Font";
+  src:
+    url("/static/fonts/MesloLGSNerdFont-Regular.ttf") format("truetype"),
+    url("/static/fonts/MesloLGSNerdFont-Bold.ttf") format("truetype"),
+    url("/static/fonts/MesloLGSNerdFont-Italic.ttf") format("truetype"),
+    url("/static/fonts/MesloLGSNerdFont-BoldItalic.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "MesloLGS Nerd Font", sans-serif;
+}
