@@ -1,4 +1,4 @@
-name: Test
+name: Run go tests
 on: [push, pull_request]
 
 jobs:
@@ -20,37 +20,16 @@ jobs:
         with:
           go-version: ${{ steps.get-go-version.outputs.GO_VERSION }}
 
-      # this isn't required in this case, since theres no external packages on the go.mod file (and fails)
-      - name: Install dependencies
-        run: go mod tidy
-        working-directory: microservice
+      # # this isn't required in this case, since theres no external packages on the go.mod file (and fails)
+      # - name: Install dependencies
+      #   run: go mod tidy
+      #   working-directory: microservice
 
       - name: Run client package Tests
-        run: go test -json ./internal/client > TestResults-msinternal-${{ steps.get-go-version.outputs.GO_VERSION }}.json
+        run: go test -v ./internal/client
         working-directory: microservice
-
-      # # debug local
-      # - name: Print json result for client(internal)
-      #   run: cat TestResults-msinternal-${{ steps.get-go-version.outputs.GO_VERSION }}.json
-      #   working-directory: microservice
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: Go-results-msinternal
-          path: microservice/TestResults-msinternal-${{ steps.get-go-version.outputs.GO_VERSION }}.json
 
       - name: Run web(main) package Tests
-        run: go test -json ./cmd/web > TestResults-msmain-${{ steps.get-go-version.outputs.GO_VERSION }}.json
+        # run: go test -json ./cmd/web > TestResults-msmain-${{ steps.get-go-version.outputs.GO_VERSION }}.json
+        run: go test -v ./cmd/web
         working-directory: microservice
-
-      # # debug local
-      # - name: Print json result for web(main)
-      #   run: cat TestResults-msmain-${{ steps.get-go-version.outputs.GO_VERSION }}.json
-      #   working-directory: microservice
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: Go-results-msmain
-          path: microservice/TestResults-msmain-${{ steps.get-go-version.outputs.GO_VERSION }}.json
