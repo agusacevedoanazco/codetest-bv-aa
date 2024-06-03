@@ -9,6 +9,19 @@ import (
 	"testing"
 )
 
+func TestMain(m *testing.M) {
+	projectRoot, err := locateProjectRoot()
+	if err != nil {
+		log.Fatalf("could not locate project root %v", err)
+	}
+
+	err = os.Chdir(projectRoot)
+	if err != nil {
+		log.Fatalf("could not change workdir, %v", err)
+	}
+	os.Exit(m.Run())
+}
+
 func mockEndpoint(t *testing.T) (string, func()) {
 	t.Helper()
 
@@ -31,7 +44,7 @@ func mockEndpoint(t *testing.T) (string, func()) {
 	}
 }
 
-func TestMain(t *testing.T) {
+func TestRoutes(t *testing.T) {
 	testCases := []struct {
 		name    string
 		method  string

@@ -39,16 +39,6 @@ func (app *application) logRequest(next http.Handler) http.Handler {
 	})
 }
 
-// func secureContentsHeaders(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; font-src 'self'")
-// 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
-// 		w.Header().Set("X-Content-Type-Options", "nosniff")
-//
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
-
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
