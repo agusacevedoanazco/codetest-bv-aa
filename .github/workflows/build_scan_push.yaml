@@ -15,14 +15,19 @@ jobs:
         id: get-sha
         run: "echo ::set-output name=short_sha::$(git rev-parse --short HEAD)"
 
+      # - name: Get sa values
+      #   id: debug
+      #   run: |
+      #     echo ${{ secrets.GCP_SA }}
+
       - name: Build docker image
         uses: docker/build-push-action@v5
         with:
           context: ./microservice
           push: false
           tags: |
-            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:${{ steps.get-sha.outputs.short_sha }}
-            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:latest
+            ${{ vars.CR_URL }}/microservice:${{ steps.get-sha.outputs.short_sha }}
+            ${{ vars.CR_URL }}/microservice:latest
             localbuild/microservice:latest
           # # used for debugging
           # tags: |
@@ -39,19 +44,31 @@ jobs:
       - name: Login to registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.cr_url }}
-          username: ${{ secrets.cr_username }}
-          password: ${{ secrets.cr_token }}
+          registry: us-central1-docker.pkg.dev
+          username: __json_key_base64
+          password: ${{ secrets.GCP_SA }}
 
-      - name: Build docker image
+      - name: Push docker image
         uses: docker/build-push-action@v5
         with:
           context: ./microservice
           push: true
           tags: |
-            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:${{ steps.get-sha.outputs.short_sha }}
-            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:latest
-            localbuild/microservice:latest
-          # # used for debugging
-          # tags: |
-          #   localbuild/microservice:latest
+            ${{ vars.CR_URL }}/microservice:${{ steps.get-sha.outputs.short_sha }}
+            ${{ vars.CR_URL }}/microservice:latest
+
+      - name: Update the container image url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          IMAGE_TAG: ${{ vars.CR_URL}}/microservice:${{ steps.get-sha.outputs.short_sha }}
+        run: |
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-Github-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/$REPO/actions/variables/CR_IMG \
+            -d "{\"name\":\"CR_IMG\",\"value\":\"$IMAGE_TAG\"}"
+        # run: |
+        #   echo "Repository name: $REPO"
