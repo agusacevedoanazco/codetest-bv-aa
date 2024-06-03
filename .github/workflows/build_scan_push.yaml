@@ -1,0 +1,57 @@
+name: Build, scan and push artifact
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: get-sha
+        run: "echo ::set-output name=short_sha::$(git rev-parse --short HEAD)"
+
+      - name: Build docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./microservice
+          push: false
+          tags: |
+            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:${{ steps.get-sha.outputs.short_sha }}
+            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:latest
+            localbuild/microservice:latest
+          # # used for debugging
+          # tags: |
+          #   localbuild/microservice:latest
+
+      - name: Artifact vulnerability scan
+        id: imagescan
+        uses: anchore/scan-action@v3
+        with:
+          image: "localbuild/microservice:latest"
+          severity-cutoff: high
+          output-format: table
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.cr_url }}
+          username: ${{ secrets.cr_username }}
+          password: ${{ secrets.cr_token }}
+
+      - name: Build docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./microservice
+          push: true
+          tags: |
+            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:${{ steps.get-sha.outputs.short_sha }}
+            ${{ secrets.cr_url }}/${{ secrets.cr_username }}/microservice:latest
+            localbuild/microservice:latest
+          # # used for debugging
+          # tags: |
+          #   localbuild/microservice:latest

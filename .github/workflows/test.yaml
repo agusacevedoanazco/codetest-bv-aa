@@ -1,6 +1,5 @@
 name: Run go tests
 on: [push, pull_request]
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,7 +19,7 @@ jobs:
         with:
           go-version: ${{ steps.get-go-version.outputs.GO_VERSION }}
 
-      # # this isn't required in this case, since theres no external packages on the go.mod file (and fails)
+      # # this isn't required in this case, since theres no external packages on the go.mod file
       # - name: Install dependencies
       #   run: go mod tidy
       #   working-directory: microservice
