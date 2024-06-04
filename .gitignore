@@ -1,1 +1,3 @@
 .gitea/**
+.vars
+.secrets
