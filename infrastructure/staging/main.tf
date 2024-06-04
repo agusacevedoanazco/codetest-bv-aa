@@ -1,54 +1,39 @@
-resource "google_cloud_run_service" "staging-bv-ms" {
+resource "google_cloud_run_v2_service" "staging-bv-ms" {
   name     = "staging-bv-ms"
-  location = var.gcp-config.region
-  project  = var.gcp-config.project
+  location = "us-central1"
+  ingress  = "INGRESS_TRAFFIC_ALL"
 
   template {
-    spec {
-      containers {
-        image = var.bv-ms-img
-        ports {
-          container_port = 32080
-        }
-        resources {
-          limits = {
-            cpu    = "200m"
-            memory = "200Mi"
-          }
-          requests = {
-            cpu    = "100m"
-            memory = "100Mi"
-          }
-        }
-      }
-      timeout_seconds = 90
-
+    scaling {
+      max_instance_count = 2
+      min_instance_count = 0
     }
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/maxScale" = "2"
-        "autoscaling.knative.dev/minScale" = "0"
-        "run.googleapis.com/ingress"       = "all"
+    containers {
+      image = var.bv-ms-img
+      ports {
+        container_port = 32080
+      }
+      resources {
+        limits = {
+          cpu    = "200m"
+          memory = "200Mi"
+        }
+        startup_cpu_boost = false
+        cpu_idle          = true
+      }
+      env {
+        name  = "ENDPOINT_URL"
+        value = var.endpoint-url
       }
     }
   }
-
-  autogenerate_revision_name = true
 }
 
-data "google_iam_policy" "allowall" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "allowall" {
-  location = google_cloud_run_service.staging-bv-ms.location
-  project  = google_cloud_run_service.staging-bv-ms.project
-  service  = google_cloud_run_service.staging-bv-ms.name
-
-  policy_data = data.google_iam_policy.allowall
+resource "google_cloud_run_service_iam_binding" "svc-iam-binding" {
+  location = google_cloud_run_v2_service.staging-bv-ms.location
+  service  = google_cloud_run_v2_service.staging-bv-ms.name
+  role     = "roles/run.invoker"
+  members = [
+    "allUsers"
+  ]
 }
