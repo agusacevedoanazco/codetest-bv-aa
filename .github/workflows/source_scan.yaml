@@ -1,12 +1,11 @@
 name: Source code vulnerability scan
+
 on:
   push:
-    branches:
-      - "main"
-      - "feature/*"
+    branches: ["main", "feature/*"]
 
 jobs:
-  codescan:
+  source-scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -1,11 +1,64 @@
 name: Deploy to PROD
+
 on:
-  push:
-    branches:
-      - "main"
+  workflow_call:
+
 jobs:
   deploy-prod:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
-      - name: Todo
-        run: echo "//TODO"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform cli
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.2"
+
+      - name: Setup terraform variables
+        id: vars
+        working-directory: ./infrastructure/prod
+        run: |
+          cat > terraform.tfvars <<EOF
+          gcp-project="${{ vars.GCP_PROJECT }}"
+          bv-ms-img="${{ vars.CR_IMG }}"
+          endpoint-url="${{ vars.ENDPOINT_URL }}"
+          EOF
+
+      - name: Decode base64 service-account
+        env:
+          BASE64_SA: ${{ secrets.GCP_SA }}
+        working-directory: ./infrastructure/prod
+        run: |
+          echo "$BASE64_SA" | base64 --decode > credentials.json
+
+      - name: Terraform init
+        working-directory: ./infrastructure/prod
+        run: terraform init
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+
+      - name: Terraform validate
+        working-directory: ./infrastructure/prod
+        run: terraform validate
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+          GOOGLE_CLOUD_PROJECT: ${{ vars.GCP_PROJECT }}
+
+      - name: Terraform plan
+        working-directory: ./infrastructure/prod
+        # run: terraform plan -no-color -out=plan
+        run: terraform plan -no-color -out=plan-prod
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+          GOOGLE_CLOUD_PROJECT: ${{ vars.GCP_PROJECT }}
+
+      - name: Terraform apply
+        working-directory: ./infrastructure/prod
+        run: terraform apply plan-prod
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+          GOOGLE_CLOUD_PROJECT: ${{ vars.GCP_PROJECT }}

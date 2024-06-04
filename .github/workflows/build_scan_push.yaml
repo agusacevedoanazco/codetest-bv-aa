@@ -4,8 +4,9 @@ on:
   workflow_call:
 
 jobs:
-  build:
+  artifact:
     runs-on: ubuntu-latest
+    # if: github.ref == 'refs/head/main'
 
     steps:
       - name: Checkout repository
@@ -14,11 +15,6 @@ jobs:
       - name: Get short SHA
         id: get-sha
         run: "echo ::set-output name=short_sha::$(git rev-parse --short HEAD)"
-
-      # - name: Get sa values
-      #   id: debug
-      #   run: |
-      #     echo ${{ secrets.GCP_SA }}
 
       - name: Build docker image
         uses: docker/build-push-action@v5
@@ -29,9 +25,9 @@ jobs:
             ${{ vars.CR_URL }}/microservice:${{ steps.get-sha.outputs.short_sha }}
             ${{ vars.CR_URL }}/microservice:latest
             localbuild/microservice:latest
-          # # used for debugging
-          # tags: |
-          #   localbuild/microservice:latest
+      # # :DEBUG
+      # tags: |
+      #   localbuild/microservice:latest
 
       - name: Artifact vulnerability scan
         id: imagescan
@@ -44,8 +40,8 @@ jobs:
       - name: Login to registry
         uses: docker/login-action@v3
         with:
-          registry: us-central1-docker.pkg.dev
-          username: __json_key_base64
+          registry: ${{ vars.CR_LOCATION }}
+          username: _json_key_base64
           password: ${{ secrets.GCP_SA }}
 
       - name: Push docker image
@@ -70,5 +66,3 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             https://api.github.com/repos/$REPO/actions/variables/CR_IMG \
             -d "{\"name\":\"CR_IMG\",\"value\":\"$IMAGE_TAG\"}"
-        # run: |
-        #   echo "Repository name: $REPO"
