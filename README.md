@@ -4,7 +4,22 @@ Implementación de un pipeline de despliegue de una aplicación sobre Google Clo
 
 ### Tabla de contenidos (TOC)
 
-- //TODO
+<!-- toc -->
+
+- [Contenidos del repositorio](#contenidos-del-repositorio)
+- [Aplicación (microservicio)](#aplicacion-microservicio)
+- [Despliegue en Cloud Pública](#despliegue-en-cloud-publica)
+- [Pipeline CI/CD](#pipeline-cicd)
+  * [Workflows triggers](#workflows-triggers)
+  * [Resumen](#resumen)
+    + [Workflows ejecutado por push events](#workflows-ejecutado-por-push-events)
+    + [Workflow ejecutado por push o pull request events](#workflow-ejecutado-por-push-o-pull-request-events)
+    + [Workflow ejecutado por workflow_run.completed event de source-scan si el origen es un push event a main](#workflow-ejecutado-por-workflow_runcompleted-event-de-source-scan-si-el-origen-es-un-push-event-a-main)
+    + [Workflows que son ejecutados por llamadas de otros workflows (workflow_call)](#workflows-que-son-ejecutados-por-llamadas-de-otros-workflows-workflow_call)
+- [Flujo de Git soportado](#flujo-de-git-soportado)
+- [IaC](#iac)
+
+<!-- tocstop -->
 
 ### Contenidos del repositorio
 
