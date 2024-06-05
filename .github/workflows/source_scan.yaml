@@ -2,7 +2,6 @@ name: Source code vulnerability scan
 
 on:
   push:
-    branches: ["main", "feature/*"]
 
 jobs:
   source-scan:
