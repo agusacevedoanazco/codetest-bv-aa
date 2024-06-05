@@ -5,7 +5,7 @@ resource "google_cloud_run_v2_service" "prod-bv-ms" {
 
   template {
     scaling {
-      max_instance_count = 2
+      max_instance_count = 100
       min_instance_count = 0
     }
     containers {

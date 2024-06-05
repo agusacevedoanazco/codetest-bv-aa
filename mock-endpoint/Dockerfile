@@ -11,4 +11,6 @@ FROM alpine:3.20 as serve-stage
 
 COPY --from=build-stage /app/mock-endpoint /mock-endpoint
 
+EXPOSE 8080
+
 CMD [ "/mock-endpoint" ]
